@@ -1,3 +1,10 @@
+<?php
+$databaseUrl = getenv("DATABASE_URL");
+
+if (!$databaseUrl) {
+    die("DATABASE_URL이 설정되지 않았습니다.");
+}
+
 $databaseUrl = getenv("DATABASE_URL");
 
 $db = parse_url($databaseUrl);
@@ -12,3 +19,8 @@ $conn = new PDO(
     $user,
     $pass
 );
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("DB 연결 실패: " . $e->getMessage());
+}
+?>
