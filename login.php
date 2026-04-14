@@ -15,10 +15,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($user && password_verify($password, $user['password'])) {
 
-        $_SESSION['user'] = $user['username'];
+        $_SESSION['user'] = $username;
 
-        header("Location: index.php");
-        exit();
+        echo "<script>alert('로그인 성공!'); location.href='index.php';</script>";
 
     } else {
         $error = "아이디 또는 비밀번호가 틀렸습니다.";
