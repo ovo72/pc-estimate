@@ -1,3 +1,6 @@
+var_dump(getenv("DATABASE_URL"));
+exit;
+
 <?php
 $databaseUrl = getenv("DATABASE_URL");
 
