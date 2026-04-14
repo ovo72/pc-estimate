@@ -3,16 +3,14 @@ include "db.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $username = trim($_POST['username']);
+    $username = $_POST['username'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
     $stmt = $conn->prepare("SELECT * FROM users WHERE username = :username");
     $stmt->bindParam(':username', $username);
     $stmt->execute();
 
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($user) {
+    if ($stmt->rowCount() > 0) {
         $error = "이미 존재하는 아이디입니다.";
     } else {
 
@@ -21,8 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bindParam(':password', $password);
 
         if ($stmt->execute()) {
-            header("Location: login.php");
-            exit();
+            echo "<script>alert('회원가입 성공!'); location.href='login.php';</script>";
         } else {
             $error = "회원가입 실패";
         }
