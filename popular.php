@@ -8,52 +8,48 @@ $type = $_GET['type'] ?? '';
 if (isset($_GET['like']) && isset($_SESSION['user'])) {
 
     $build_id = $_GET['like'];
-    $user = $_SESSION['user'];
+    $username = $_SESSION['user'];
 
     $check = $conn->prepare("
         SELECT * FROM likes 
-        WHERE build_id = :build_id AND user = :user
+        WHERE build_id = ? AND username = ?
     ");
-    $check->execute([
-        ':build_id' => $build_id,
-        ':user' => $user
-    ]);
 
-    if (!$check->fetch()) {
+    $check->execute([$build_id, $username]);
+
+    if ($check->rowCount() == 0) {
         $stmt = $conn->prepare("
-            INSERT INTO likes (build_id, user)
-            VALUES (:build_id, :user)
+            INSERT INTO likes (build_id, username)
+            VALUES (?, ?)
         ");
-        $stmt->execute([
-            ':build_id' => $build_id,
-            ':user' => $user
-        ]);
+        $stmt->execute([$build_id, $username]);
     }
 
     header("Location: popular.php?type=$type");
     exit();
 }
 
-// 목록 조회
+// 목록
 $sql = "
 SELECT builds.*, COUNT(likes.id) AS like_count
 FROM builds
 LEFT JOIN likes ON builds.id = likes.build_id
 ";
 
-if ($type) {
-    $sql .= " WHERE builds.type = :type";
+if ($type != '') {
+    $sql .= " WHERE builds.type = ? ";
 }
 
 $sql .= " GROUP BY builds.id ORDER BY like_count DESC";
 
 $stmt = $conn->prepare($sql);
 
-if ($type) {
-    $stmt->bindParam(':type', $type);
+if ($type != '') {
+    $stmt->execute([$type]);
+} else {
+    $stmt->execute();
 }
 
-$stmt->execute();
 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
