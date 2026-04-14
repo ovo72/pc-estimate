@@ -9,15 +9,15 @@ $db = parse_url($databaseUrl);
 
 $host = $db["host"];
 $port = $db["port"];
-$dbname = ltrim($db["path"], "/");
 $user = $db["user"];
-$password = $db["pass"];
+$pass = $db["pass"];
+$dbname = ltrim($db["path"], "/");
 
 try {
     $conn = new PDO(
         "pgsql:host=$host;port=$port;dbname=$dbname",
         $user,
-        $password
+        $pass
     );
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
