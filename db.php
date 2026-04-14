@@ -1,6 +1,3 @@
-var_dump(getenv("DATABASE_URL"));
-exit;
-
 <?php
 $databaseUrl = getenv("DATABASE_URL");
 
@@ -11,14 +8,13 @@ if (!$databaseUrl) {
 $db = parse_url($databaseUrl);
 
 $host = $db["host"];
-$port = $db["port"];
 $user = $db["user"];
 $pass = $db["pass"];
 $dbname = ltrim($db["path"], "/");
 
 try {
     $conn = new PDO(
-        "pgsql:host=$host;port=$port;dbname=$dbname",
+        "pgsql:host=$host;dbname=$dbname",
         $user,
         $pass
     );
