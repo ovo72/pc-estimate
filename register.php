@@ -1,3 +1,5 @@
+var_dump(getenv("DATABASE_URL"));
+exit;
 <?php
 include "db.php";
 
